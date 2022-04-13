@@ -8,14 +8,14 @@ using namespace std;
 
 typedef pair<string, string> pss;
 
-struct{
+struct {
 	bool stringFlag;
 	bool integerFlag;
-	bool
+	bool beforeintFlag;
 }flag;
 
 bool isDeli(char c) {
-
+	
 }
 
 pss tokenize(string input) {
@@ -126,6 +126,11 @@ pss tokenize(string input) {
 		output.first = "COMMA";
 		output.second = ",";
 	}
+	//identifier token
+	else {
+		output.first = "ID";
+		output.second = input;
+	}
 
 	return output;
 }
@@ -134,19 +139,17 @@ int main(void) {
 	
 	ifstream fin;
 	ofstream fout;
+	char input;
 	string buffer;
 	string token, value;
 	vector<pair<string, string>> result;
 
 	fin.open("test.c");
 
-	while (fin.peek() != EOF) {
+	while (fin.get(input)) {
 		token = value = "";
-		getline(fin, buffer);
 
-		for (int i = 0; i < buffer.length; i++) {
-			
-		}
+
 
 		result.push_back({token, value});
 	}
