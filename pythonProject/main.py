@@ -94,10 +94,10 @@ def tokenize(input):
     output.append(ret)
 
 
-for i in range(65, 123):
+for i in range(65, 123):  # setting letter list
     LETTER.append(chr(i))
     LETTER.append(chr(i + 32))
-for i in range(49, 58):
+for i in range(49, 58):  # setting digit list
     DIGIT.append(chr(i))
 
 output = []
@@ -106,76 +106,77 @@ string = ""
 with open("test.c", "rt") as fin:
     buff1 = fin.read(1)
     while True:
-        if buff1 == '':
+        if buff1 == '':  # if present letter is eof -> break the loop
             break
-        buff2 = fin.read(1)
-        if stringFlag:
+        buff2 = fin.read(1)  # input the next letter
+
+        if buff1 == '"':  # if present letter is double quote, it means start or end of string
+            if stringFlag:  # it means it is the end of the string token
+                string += buff1
+                tokenize(string)
+                stringFlag = False
+            else:  # it means start of the string token
+                string = buff1
+                stringFlag = True
+        elif stringFlag:  # if this flag is true, it means it already has double quote
             string += buff1
-        elif doneFlag:
+        elif doneFlag:  # second letter of compare token
             string += buff1
             tokenize(string)
             doneFlag = False
-        elif buff1 in LETTER:
-            if wordFlag:
+        elif buff1 in LETTER:  # present character is letter
+            if wordFlag:  # it will be type, keyword, or id
                 string += buff1
-            else:
+            else:  # it is the start of type, keyword, or id
                 string = buff1
                 wordFlag = True
-            if buff2 not in LETTER + ZERO + DIGIT:
+            if buff2 not in LETTER + ZERO + DIGIT:  # next character does not include in word token
                 tokenize(string)
                 string = ""
                 wordFlag = False
-        elif buff1 in ZERO + DIGIT:
-            if integerFlag:
+        elif buff1 in ZERO + DIGIT:  # present character is digit or zero
+            if integerFlag:  # it includes in integer token value
                 string += buff1
-                if buff2 not in ZERO + DIGIT:
+                if buff2 not in ZERO + DIGIT:  # next character doesn't include integer token
                     tokenize(string)
                     string = ""
                     integerFlag = False
                     beforeIntFlag = True
-            elif wordFlag:
+            elif wordFlag:  # it includes in id token value
                 string += buff1
                 if buff2 not in ZERO + DIGIT + LETTER:
                     tokenize(string)
                     string = ""
                     wordFlag = False
-            elif buff1 in ZERO:
+            elif buff1 in ZERO:  # it is ZERO token
                 integerFlag = True
                 tokenize(buff1)
                 beforeIntFlag = True
                 integerFlag = False
-            else:
+            else:  # it is the start of integer token value
                 string = buff1
                 integerFlag = True
-                if buff2 not in ZERO + DIGIT:
+                if buff2 not in ZERO + DIGIT:  # next character doesn't include integer token value
                     tokenize(string)
                     integerFlag = False
-        elif buff1 in OPERATOR:
+        elif buff1 in OPERATOR:  # it is OP token
             tokenize(buff1)
         elif buff1 in MINUS:
-            if beforeIntFlag:
+            if beforeIntFlag:  # previous token is integer so this minus will be OP token
                 tokenize(buff1)
                 beforeIntFlag = False
-            else:
+            else:  # it will be start of negative integer token
                 string = buff1
                 integerFlag = True
-        elif buff1 in OTHERS:
+        elif buff1 in OTHERS:  # parenthesis, bracket, comma, semicolon token
             tokenize(buff1)
-        elif buff1 in ['<', '>', '!', '=']:
+        elif buff1 in ['<', '>', '!', '=']:  # this character will be the start of token
             string = buff1
-            if buff2 == '=':
+            if buff2 == '=':  # it will be two characters token
                 doneFlag = True
-            else:
+            else:  # it will be one character toekn
                 tokenize(string)
-        elif buff1 == '"':
-            if stringFlag:
-                string += buff1
-                tokenize(string)
-                stringFlag = False
-            else:
-                string = buff1
-                stringFlag = True
-        buff1 = buff2
+        buff1 = buff2  # next turn
 
 
 with open("test.out", "wt") as fout:
