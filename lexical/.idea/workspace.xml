@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="97c45eba-6c19-43b7-a13d-bf53c8d00790" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/lexical_code/lexical.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/lexical_code/lexical.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="97c45eba-6c19-43b7-a13d-bf53c8d00790" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
