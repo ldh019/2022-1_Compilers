@@ -94,7 +94,7 @@ def tokenize(input):
     output.append(ret)
 
 
-for i in range(65, 123):  # setting letter list
+for i in range(65, 91):  # setting letter list
     LETTER.append(chr(i))
     LETTER.append(chr(i + 32))
 for i in range(49, 58):  # setting digit list
