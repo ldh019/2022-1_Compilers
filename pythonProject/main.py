@@ -12,6 +12,12 @@ MINUS = ['-']
 OPERATOR = ['+', '*', '/']
 OTHERS = ['(', ')', '{', '}', ',', ';']
 
+for i in range(65, 91):  # setting letter list
+    LETTER.append(chr(i))
+    LETTER.append(chr(i + 32))
+for i in range(49, 58):  # setting digit list
+    DIGIT.append(chr(i))
+
 
 def tokenize(input):
     ret = []
@@ -94,12 +100,6 @@ def tokenize(input):
     output.append(ret)
 
 
-for i in range(65, 91):  # setting letter list
-    LETTER.append(chr(i))
-    LETTER.append(chr(i + 32))
-for i in range(49, 58):  # setting digit list
-    DIGIT.append(chr(i))
-
 output = []
 string = ""
 
@@ -113,6 +113,7 @@ with open("test.c", "rt") as fin:
         if buff1 == '"':  # if present letter is double quote, it means start or end of string
             if stringFlag:  # it means it is the end of the string token
                 string += buff1
+                beforeIntFlag = False
                 tokenize(string)
                 stringFlag = False
             else:  # it means start of the string token
@@ -122,7 +123,9 @@ with open("test.c", "rt") as fin:
             string += buff1
         elif doneFlag:  # second letter of compare token
             string += buff1
+            beforeIntFlag = False
             tokenize(string)
+            string = ""
             doneFlag = False
         elif buff1 in LETTER:  # present character is letter
             if wordFlag:  # it will be type, keyword, or id
@@ -131,6 +134,7 @@ with open("test.c", "rt") as fin:
                 string = buff1
                 wordFlag = True
             if buff2 not in LETTER + ZERO + DIGIT:  # next character does not include in word token
+                beforeIntFlag = False
                 tokenize(string)
                 string = ""
                 wordFlag = False
@@ -145,6 +149,7 @@ with open("test.c", "rt") as fin:
             elif wordFlag:  # it includes in id token value
                 string += buff1
                 if buff2 not in ZERO + DIGIT + LETTER:
+                    beforeIntFlag = False
                     tokenize(string)
                     string = ""
                     wordFlag = False
@@ -157,9 +162,11 @@ with open("test.c", "rt") as fin:
                 string = buff1
                 integerFlag = True
                 if buff2 not in ZERO + DIGIT:  # next character doesn't include integer token value
+                    beforeIntFlag = True
                     tokenize(string)
                     integerFlag = False
         elif buff1 in OPERATOR:  # it is OP token
+            beforeIntFlag = False
             tokenize(buff1)
         elif buff1 in MINUS:
             if beforeIntFlag:  # previous token is integer so this minus will be OP token
@@ -169,13 +176,16 @@ with open("test.c", "rt") as fin:
                 string = buff1
                 integerFlag = True
         elif buff1 in OTHERS:  # parenthesis, bracket, comma, semicolon token
+            beforeIntFlag = False
             tokenize(buff1)
         elif buff1 in ['<', '>', '!', '=']:  # this character will be the start of token
             string = buff1
             if buff2 == '=':  # it will be two characters token
                 doneFlag = True
-            else:  # it will be one character toekn
+            else:  # it will be one character token
+                beforeIntFlag = False
                 tokenize(string)
+                string = ""
         buff1 = buff2  # next turn
 
 
