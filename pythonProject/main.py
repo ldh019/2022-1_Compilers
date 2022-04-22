@@ -3,6 +3,7 @@ integerFlag = False  # if this flag is true, letter will include in integer
 beforeIntFlag = False  # if present letter is - and this flag is true, it means
 doneFlag = False  # if next character is last character of this token, it turns true
 wordFlag = False  # if this token includes in id, keyword, type, it turns true
+errorFlag = False  # it detects error
 
 LETTER = []
 DIGIT = []
@@ -56,7 +57,6 @@ def tokenize(input):
         ret.append(input)
     elif input == '=':
         ret.append("ASSIGN")
-        ret.append(input)
 
     # compare operation token
     elif input == "<":
@@ -96,7 +96,7 @@ def tokenize(input):
     else:
         ret.append("ID")
         ret.append(input)
-
+        beforeIntFlag = True
     output.append(ret)
 
 
@@ -110,14 +110,16 @@ with open("test.c", "rt") as fin:
             break
         buff2 = fin.read(1)  # input the next letter
 
-        if buff1 == '"':  # if present letter is double quote, it means start or end of string
+        if buff1 not in LETTER + DIGIT + ZERO + WHITESPACE + MINUS + OPERATOR + OTHERS:
+            errorFlag = True
+            break
+        elif buff1 == '"':  # if present letter is double quote, it means start or end of string
             if stringFlag:  # it means it is the end of the string token
-                string += buff1
                 beforeIntFlag = False
                 tokenize(string)
                 stringFlag = False
             else:  # it means start of the string token
-                string = buff1
+                string = ""
                 stringFlag = True
         elif stringFlag:  # if this flag is true, it means it already has double quote
             string += buff1
@@ -134,7 +136,7 @@ with open("test.c", "rt") as fin:
                 string = buff1
                 wordFlag = True
             if buff2 not in LETTER + ZERO + DIGIT:  # next character does not include in word token
-                beforeIntFlag = False
+                beforeIntFlag = True
                 tokenize(string)
                 string = ""
                 wordFlag = False
@@ -149,7 +151,7 @@ with open("test.c", "rt") as fin:
             elif wordFlag:  # it includes in id token value
                 string += buff1
                 if buff2 not in ZERO + DIGIT + LETTER:
-                    beforeIntFlag = False
+                    beforeIntFlag = True
                     tokenize(string)
                     string = ""
                     wordFlag = False
@@ -172,6 +174,9 @@ with open("test.c", "rt") as fin:
             if beforeIntFlag:  # previous token is integer so this minus will be OP token
                 tokenize(buff1)
                 beforeIntFlag = False
+            elif buff2 in ZERO:
+                tokenize(buff1)
+                beforeIntFlag = False
             else:  # it will be start of negative integer token
                 string = buff1
                 integerFlag = True
@@ -190,9 +195,12 @@ with open("test.c", "rt") as fin:
 
 
 with open("test.out", "wt") as fout:
-    for element in output:
-        if len(element) == 1:
-            buffer = "<" + element[0] + ">\n"
-        else:
-            buffer = "<" + element[0] + ", " + element[1] + ">\n"
-        fout.write(buffer)
+    if errorFlag:
+        fout.write("Error")
+    else:
+        for element in output:
+            if len(element) == 1:
+                buffer = "<" + element[0] + ">\n"
+            else:
+                buffer = "<" + element[0] + ", " + element[1] + ">\n"
+            fout.write(buffer)
