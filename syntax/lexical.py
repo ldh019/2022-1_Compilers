@@ -25,78 +25,77 @@ for i in range(49, 58):  # setting digit list
 def tokenize(input):
     ret = []
     if stringFlag:  # string token
-        ret.append("STRING")
+        ret.append("literal")
         ret.append(input)
     elif integerFlag:  # integer token
-        ret.append("INTEGER")
+        ret.append("num")
         ret.append(input)
 
     # variable type token
     elif input in ["int", "INT"]:
-        ret.append("VARTYPE")
+        ret.append("vtype")
         ret.append("INT")
     elif input in ["char", "CHAR"]:
-        ret.append("VARTYPE")
+        ret.append("vtype")
         ret.append("CHAR")
 
     # keyword token
     elif input in ["if", "IF"]:
-        ret.append("KEYWORD")
-        ret.append("IF")
+        ret.append("if")
     elif input in ["else", "ELSE"]:
-        ret.append("KEYWORD")
-        ret.append("ELSE")
+        ret.append("else")
     elif input in ["while", "WHILE"]:
-        ret.append("KEYWORD")
-        ret.append("WHILE")
+        ret.append("while")
     elif input in ["return", "RETURN"]:
-        ret.append("KEYWORD")
-        ret.append("RETURN")
+        ret.append("return")
 
     # operator token
-    elif input in OPERATOR + MINUS:
-        ret.append("OP")
+    elif input in ['+', '-']:
+        ret.append("addsub")
+        ret.append(input)
+    elif input in ['*', '/']:
+        ret.append("multdiv")
         ret.append(input)
     elif input == '=':
-        ret.append("ASSIGN")
+        ret.append("assign")
 
     # compare operation token
     elif input == "<":
-        ret.append("COMPARE")
+        ret.append("comp")
         ret.append("<")
     elif input == ">":
-        ret.append("COMPARE")
+        ret.append("comp")
         ret.append(">")
     elif input == "<=":
-        ret.append("COMPARE")
+        ret.append("comp")
         ret.append("<=")
     elif input == ">=":
-        ret.append("COMPARE")
+        ret.append("comp")
         ret.append(">=")
     elif input == "!=":
-        ret.append("COMPARE")
+        ret.append("comp")
         ret.append("!=")
     elif input == "==":
-        ret.append("COMPARE")
+        ret.append("comp")
         ret.append("==")
 
     # other character token
     elif input == ";":
-        ret.append("SEMICOLON")
+        ret.append("semi")
     elif input == ",":
-        ret.append("COMMA")
+        ret.append("comma")
     elif input == "{":
-        ret.append("LB")
+        ret.append("lbrace")
     elif input == "}":
-        ret.append("RB")
+        ret.append("rbrace")
     elif input == "(":
-        ret.append("LPAREN")
+        ret.append("lparen")
     elif input == ")":
-        ret.append("RPAREN")
+        ret.append("rparen")
 
     # identifier token
     else:
-        ret.append("ID")
+        ret.append("id")
         ret.append(input)
         beforeIntFlag = True
     output.append(ret)
